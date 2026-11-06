@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<meta name="theme-color" content="#07111d" />
+<link rel="icon" href="data:," />
+<title>Blade Arena — Beyblade Battle</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap');
+:root{color-scheme:dark;--bg:#07111d;--panel:#0b1927;--line:rgba(167,209,235,.16);--muted:#8da2b6;--cyan:#5ee7ff;--blue:#278cff;--orange:#ff8b55;--pink:#ff4d9d;--green:#57efba}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);font-family:Manrope,system-ui,sans-serif;color:#f4f8fc}button{font:inherit;color:inherit;cursor:pointer}#app{position:relative;width:100%;height:100%;min-height:540px;isolation:isolate;background:radial-gradient(ellipse at 50% 40%,#132941 0,#091522 47%,#050b12 100%)}
+#stage{position:absolute;inset:0;z-index:-1}#stage canvas{width:100%;height:100%;display:block}.ambient{position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(4,10,17,.67),transparent 25%,transparent 67%,rgba(4,10,17,.65));z-index:-1}
+.topbar{height:76px;position:absolute;inset:0 0 auto;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(18px,4vw,58px);border-bottom:1px solid rgba(255,255,255,.07);background:linear-gradient(180deg,rgba(4,11,18,.9),rgba(4,11,18,.36));z-index:2}
+.brand{display:flex;align-items:center;gap:12px}.brand-mark{width:37px;height:37px;border:1px solid var(--cyan);border-radius:50%;display:grid;place-items:center;box-shadow:0 0 22px #36caff33;color:var(--cyan);font-size:21px;transform:rotate(-25deg)}.brand-title{font:800 18px 'Barlow Condensed',sans-serif;letter-spacing:2.5px}.brand-title span{color:var(--cyan)}.brand-sub{font:10px 'DM Mono',monospace;letter-spacing:1.6px;color:#859db1;margin-top:3px}.top-right{display:flex;align-items:center;gap:22px}.season{font:10px 'DM Mono',monospace;color:#91a9bd;letter-spacing:1.4px}.live{font:10px 'DM Mono',monospace;color:#c5d3df;letter-spacing:1px;display:flex;align-items:center;gap:8px}.live:before{content:'';width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green)}
+.main{position:absolute;inset:76px 0 0;padding:24px clamp(18px,4vw,58px) 25px;display:grid;grid-template-columns:minmax(230px,300px) 1fr minmax(230px,300px);grid-template-rows:1fr;gap:22px;pointer-events:none}.side{display:flex;flex-direction:column;gap:14px;pointer-events:auto;min-width:0}.section-kicker{font:10px 'DM Mono',monospace;letter-spacing:2px;color:#7892a7;text-transform:uppercase}.panel{border:1px solid var(--line);background:linear-gradient(145deg,rgba(14,32,49,.92),rgba(7,17,28,.89));border-radius:14px;box-shadow:0 16px 42px #0003;backdrop-filter:blur(16px)}.pilot-card{padding:18px 18px 15px;position:relative;overflow:hidden}.pilot-card:after{content:'';position:absolute;right:-25px;top:-35px;width:122px;height:122px;border-radius:50%;border:1px solid #5ee7ff31;box-shadow:0 0 35px #31b6ff12,inset 0 0 25px #31b6ff12}.pilot-head{display:flex;align-items:center;gap:12px;position:relative;z-index:1}.avatar{height:42px;width:42px;border-radius:12px;display:grid;place-items:center;font:700 19px 'Barlow Condensed',sans-serif;color:#b8f5ff;background:linear-gradient(145deg,#126194,#082239);border:1px solid #50dfff66}.pilot-name{font:700 17px 'Barlow Condensed',sans-serif;letter-spacing:.6px}.pilot-tag{font:9px 'DM Mono',monospace;color:#7f9bb0;letter-spacing:1px;margin-top:3px}.side-label{margin:20px 0 7px;display:flex;justify-content:space-between;align-items:center;font:10px 'DM Mono',monospace;letter-spacing:1.3px;color:#8da4b7}.side-label strong{font:600 10px 'DM Mono',monospace;color:#d9e7f2;letter-spacing:.3px}.stat-track{height:7px;background:#1a2c3c;border-radius:10px;overflow:hidden}.stat-fill{height:100%;width:100%;border-radius:inherit;background:linear-gradient(90deg,#2188ff,#63e8ff);box-shadow:0 0 12px #42caff88;transition:width .25s}.spin-row{display:flex;align-items:center;justify-content:space-between;margin-top:15px}.spin-number{font:800 28px 'Barlow Condensed',sans-serif;letter-spacing:.3px}.spin-number small{font:10px 'DM Mono',monospace;color:#849caf;letter-spacing:1px}.spin-icon{color:var(--cyan);font-size:19px}.blade-card{padding:15px 17px}.blade-card h3{margin:0;font:700 14px 'Barlow Condensed',sans-serif;letter-spacing:1px}.blade-card p{margin:4px 0 12px;font-size:10px;color:#8199ac}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.stat-box{padding:9px 5px;text-align:center;border-radius:8px;background:#ffffff06;border:1px solid #ffffff0b}.stat-box b{display:block;font:700 15px 'Barlow Condensed',sans-serif}.stat-box span{font:8px 'DM Mono',monospace;letter-spacing:.6px;color:#7892a6}
+.center{position:relative;pointer-events:none;display:flex;align-items:center;justify-content:center;min-width:0}.battle-title{position:absolute;top:3px;left:50%;transform:translateX(-50%);white-space:nowrap;text-align:center}.battle-title .eyebrow{font:10px 'DM Mono',monospace;letter-spacing:3px;color:#95adc0}.battle-title h1{font:900 clamp(26px,3vw,39px) 'Barlow Condensed',sans-serif;letter-spacing:2px;margin:4px 0 0;text-transform:uppercase;text-shadow:0 4px 20px #0008}.battle-title h1 em{font-style:normal;color:var(--cyan)}.round-pill{position:absolute;top:76px;left:50%;transform:translateX(-50%);border:1px solid #ffffff18;background:#081521bd;padding:7px 13px;border-radius:30px;font:9px 'DM Mono',monospace;letter-spacing:1.3px;color:#b2c5d5;white-space:nowrap}.round-pill b{color:var(--cyan);font-weight:500}.arena-tag{position:absolute;bottom:15px;left:50%;transform:translateX(-50%);font:9px 'DM Mono',monospace;letter-spacing:2px;color:#7690a4;white-space:nowrap}.arena-tag span{color:#d2e0eb}
+.right-side{align-items:stretch}.opponent-card{padding:18px 18px 15px}.opp-head{display:flex;justify-content:space-between;align-items:flex-start}.opp-name{font:700 17px 'Barlow Condensed',sans-serif;letter-spacing:.5px}.opp-role{font:9px 'DM Mono',monospace;color:#9e7b90;letter-spacing:1px;margin-top:4px}.opp-level{font:9px 'DM Mono',monospace;color:#ff9abd;border:1px solid #ff659d4a;padding:5px 7px;border-radius:6px;background:#ff427a0d}.opp-avatar{width:40px;height:40px;display:grid;place-items:center;border:1px solid #ff7b965c;background:linear-gradient(135deg,#682a42,#261426);color:#ffb6ca;border-radius:50%;font:800 18px 'Barlow Condensed',sans-serif}.opp-stat{margin-top:19px}.opp-stat .stat-fill{background:linear-gradient(90deg,#ff4a79,#ffad63);box-shadow:0 0 12px #ff5b7c55}.opp-spin{color:#ff7f9e}.controls{padding:16px 17px}.controls-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}.controls-title h3{margin:0;font:700 13px 'Barlow Condensed',sans-serif;letter-spacing:1px}.kbd{font:9px 'DM Mono',monospace;color:#8199ab;border:1px solid #ffffff16;padding:4px 6px;border-radius:5px}.control-line{display:flex;align-items:center;gap:9px;margin:9px 0;font-size:10px;color:#9db0c0}.keycap{width:23px;height:22px;flex:none;display:grid;place-items:center;border:1px solid #ffffff25;border-bottom-width:2px;border-radius:5px;background:#ffffff08;font:10px 'DM Mono',monospace;color:#dbe8f2}.control-line .hint{margin-left:auto;color:#71889b;font:9px 'DM Mono',monospace}.boost-box{border-top:1px solid #ffffff10;margin-top:13px;padding-top:12px}.boost-head{display:flex;justify-content:space-between;font:9px 'DM Mono',monospace;letter-spacing:1px;color:#91a7b9;margin-bottom:7px}.boost-bar{height:5px;background:#1b2c3b;border-radius:8px;overflow:hidden}.boost-fill{height:100%;width:100%;background:linear-gradient(90deg,#a44dff,#63e7ff);border-radius:8px;transition:width .2s}
+.bottom-ui{position:absolute;left:50%;bottom:27px;transform:translateX(-50%);display:flex;gap:10px;align-items:center;pointer-events:auto;z-index:3}.launch-btn{position:relative;overflow:hidden;min-width:218px;border:1px solid #8af0ff;padding:13px 22px;border-radius:10px;background:linear-gradient(110deg,#1269a5,#127fad);box-shadow:0 0 27px #27bfff3a,inset 0 1px #ffffff38;text-align:center;font:800 14px 'Barlow Condensed',sans-serif;letter-spacing:2px;text-transform:uppercase;transition:transform .15s,filter .15s;user-select:none;touch-action:none}.launch-btn:hover{filter:brightness(1.18);transform:translateY(-2px)}.launch-btn:active{transform:translateY(1px)}.launch-btn:disabled{opacity:.7;cursor:default}.launch-btn .launch-sub{display:block;font:8px 'DM Mono',monospace;letter-spacing:1px;color:#b7e7f2;margin-top:3px}.launch-btn.charging{background:linear-gradient(110deg,#5331b7,#077dae);box-shadow:0 0 35px #7f69ff66}.launch-btn.charging:before{content:'';position:absolute;inset:0 auto 0 0;width:var(--charge,0%);background:linear-gradient(90deg,#a74cff66,#64ecff66);pointer-events:none}.launch-btn span{position:relative}.action-btn{height:46px;width:46px;border:1px solid #ffffff22;border-radius:10px;background:#0b1c2bcc;display:grid;place-items:center;color:#a8bed0;font-size:17px;transition:.15s}.action-btn:hover{border-color:#5ee7ff77;color:var(--cyan)}.action-btn:disabled{opacity:.4;cursor:default}.toast{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:4;text-align:center;pointer-events:none;opacity:0;transition:opacity .25s;text-shadow:0 5px 25px #000}.toast.show{opacity:1}.toast h2{margin:0;font:900 clamp(38px,7vw,72px) 'Barlow Condensed',sans-serif;letter-spacing:3px;text-transform:uppercase}.toast p{margin:2px 0 0;color:#d5e6f4;font:11px 'DM Mono',monospace;letter-spacing:2px}.toast.win h2{color:#72f3ce}.toast.loss h2{color:#ff7996}.toast.neutral h2{color:#fff}.charge-readout{position:absolute;bottom:86px;left:50%;transform:translateX(-50%);font:9px 'DM Mono',monospace;letter-spacing:1px;color:#c8eaff;opacity:0;transition:opacity .2s;white-space:nowrap}.charge-readout.show{opacity:1}.mobile-controls{display:none}
+@media(max-width:980px){.main{grid-template-columns:minmax(190px,240px) 1fr minmax(190px,240px);gap:12px;padding-left:18px;padding-right:18px}.season{display:none}.brand-title{font-size:16px}}
+@media(max-width:700px){#app{min-height:100svh}.topbar{height:60px;padding:0 16px}.brand-mark{height:32px;width:32px}.brand-title{font-size:15px}.brand-sub{font-size:8px}.top-right{gap:10px}.main{inset:60px 0 0;padding:12px 12px 15px;display:block}.side{position:absolute;top:12px;width:calc(50% - 18px);z-index:2;gap:8px}.left-side{left:12px}.right-side{right:12px}.pilot-card,.opponent-card{padding:10px;border-radius:11px;background:#0a1926d9}.pilot-head{gap:7px}.avatar,.opp-avatar{width:30px;height:30px;border-radius:9px;font-size:14px}.opp-avatar{border-radius:50%}.pilot-name,.opp-name{font-size:13px}.pilot-tag,.opp-role{font-size:7px;letter-spacing:.4px}.opp-level{font-size:7px;padding:4px}.side-label{margin:10px 0 5px;font-size:8px}.side-label strong{font-size:8px}.stat-track{height:5px}.spin-row{margin-top:8px}.spin-number{font-size:20px}.spin-number small{font-size:8px}.spin-icon{font-size:14px}.blade-card{display:none}.controls{position:absolute;bottom:73px;right:12px;width:calc(50% - 18px);padding:10px;border-radius:10px;background:#0a1926d9}.controls-title{margin:0}.controls-title h3{font-size:10px}.kbd,.control-line,.boost-box{display:none}.center{position:absolute;inset:0;pointer-events:none}.battle-title{top:102px}.battle-title .eyebrow{font-size:8px;letter-spacing:2px}.battle-title h1{font-size:28px}.round-pill{top:158px;font-size:8px;padding:5px 9px}.arena-tag{bottom:76px;font-size:7px}.bottom-ui{bottom:15px;gap:7px}.launch-btn{min-width:165px;padding:10px 14px;font-size:12px}.launch-btn .launch-sub{font-size:7px}.action-btn{height:39px;width:39px}.arena-tag:after{content:'TAP LEFT / RIGHT TO STEER · DOUBLE TAP TO BOOST';display:block;margin-top:5px;color:#b1c9d8;font-size:7px;letter-spacing:.7px}.charge-readout{bottom:64px}.toast{top:48%}}
+@media(max-width:390px){.controls{display:none}.battle-title h1{font-size:24px}.pilot-tag{letter-spacing:0}.topbar{padding:0 12px}}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="stage"></div><div class="ambient"></div>
+  <header class="topbar"><div class="brand"><div class="brand-mark">✦</div><div><div class="brand-title">BLADE<span> ARENA</span></div><div class="brand-sub">SPIN. STRIKE. SURVIVE.</div></div></div><div class="top-right"><div class="season">NEON CIRCUIT · SEASON 04</div><div class="live">ARENA LIVE</div></div></header>
+  <main class="main">
+    <aside class="side left-side">
+      <section class="panel pilot-card"><div class="pilot-head"><div class="avatar">K</div><div><div class="pilot-name">KAI STORM</div><div class="pilot-tag">ACE PILOT · #07</div></div></div><div class="side-label"><span>YOUR STAMINA</span><strong id="playerStaminaText">100%</strong></div><div class="stat-track"><div id="playerStaminaBar" class="stat-fill"></div></div><div class="spin-row"><div><div class="side-label" style="margin:0 0 2px">SPIN RATE</div><div class="spin-number"><span id="playerSpin">0</span> <small>RPM</small></div></div><div class="spin-icon">⟳</div></div></section>
+      <section class="panel blade-card"><h3>STORM PEGASUS</h3><p>Attack type · Right spin · Custom build</p><div class="stats"><div class="stat-box"><b>★★★★☆</b><span>ATTACK</span></div><div class="stat-box"><b>★★★☆☆</b><span>DEFENSE</span></div><div class="stat-box"><b>★★★☆☆</b><span>STAMINA</span></div></div></section>
+    </aside>
+    <section class="center"><div class="battle-title"><div class="eyebrow">THE FINAL SHOWDOWN</div><h1>3, 2, 1... <em>LET IT RIP!</em></h1></div><div class="round-pill">ROUND <b id="roundNumber">01</b><span> &nbsp;·&nbsp; </span><span id="battleStatus">READY TO LAUNCH</span></div><div class="arena-tag">STADIUM 01 &nbsp;·&nbsp; <span>CYCLONE BOWL</span></div></section>
+    <aside class="side right-side">
+      <section class="panel opponent-card"><div class="opp-head"><div><div class="opp-name">RYUGA DARK</div><div class="opp-role">RIVAL PILOT · #01</div></div><div class="opp-avatar">R</div></div><div class="side-label opp-stat"><span>RIVAL STAMINA</span><strong id="enemyStaminaText">100%</strong></div><div class="stat-track"><div id="enemyStaminaBar" class="stat-fill"></div></div><div class="spin-row"><div><div class="side-label" style="margin:0 0 2px">SPIN RATE</div><div class="spin-number"><span id="enemySpin">0</span> <small>RPM</small></div></div><div class="spin-icon opp-spin">⟳</div></div></section>
+      <section class="panel controls"><div class="controls-title"><h3>FLIGHT CONTROLS</h3><span class="kbd">KEYBOARD</span></div><div class="control-line"><span class="keycap">A</span><span class="keycap">D</span><span>Steer your blade</span><span class="hint">← →</span></div><div class="control-line"><span class="keycap">W</span><span>Attack boost</span><span class="hint">SPACE</span></div><div class="boost-box"><div class="boost-head"><span>BOOST ENERGY</span><span id="boostText">100%</span></div><div class="boost-bar"><div class="boost-fill" id="boostBar"></div></div></div></section>
+    </aside>
+  </main>
+  <div class="charge-readout" id="chargeReadout">LAUNCH POWER &nbsp; <span id="chargeValue">0%</span></div>
+  <div class="bottom-ui"><button class="action-btn" id="resetBtn" aria-label="Restart round" title="Restart round">↻</button><button class="launch-btn" id="launchBtn"><span id="launchLabel">HOLD TO CHARGE</span><span class="launch-sub" id="launchSub">RELEASE TO LAUNCH</span></button><button class="action-btn" id="soundBtn" aria-label="Toggle sound" title="Toggle sound">♫</button></div>
+  <div class="toast" id="toast"><h2 id="toastTitle"></h2><p id="toastSub"></p></div>
+</div>
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
+
+const $=id=>document.getElementById(id);
+const stage=$('stage');
+let scene,camera,renderer,clock,player,enemy,arenaGroup,particles=[];
+let state='ready',round=1,charge=0,charging=false,chargeStart=0,boost=100,boostHeld=false,soundOn=false,audioCtx=null,lastTime=0,toastTimer=0;
+const arenaRadius=5.1, keys={};
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const color=new THREE.Color();
+function init(){
+  scene=new THREE.Scene();scene.background=new THREE.Color('#08131f');scene.fog=new THREE.FogExp2('#08131f',.027);
+  camera=new THREE.PerspectiveCamera(37,innerWidth/innerHeight,.1,100);camera.position.set(0,10.8,14.6);camera.lookAt(0,0,0);
+  renderer=new THREE.WebGLRenderer({antialias:true,alpha:false});renderer.setPixelRatio(Math.min(devicePixelRatio,1.8));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.2;stage.appendChild(renderer.domElement);
+  scene.add(new THREE.HemisphereLight(0x9bdcff,0x101522,2.1));
+  const key=new THREE.DirectionalLight(0x8feaff,3.8);key.position.set(-5,10,7);key.castShadow=true;key.shadow.mapSize.set(1024,1024);scene.add(key);
+  const pink=new THREE.PointLight(0xff3e8b,90,17);pink.position.set(5,2,-2);scene.add(pink);
+  const cyan=new THREE.PointLight(0x12bfff,90,18);cyan.position.set(-5,2,1);scene.add(cyan);
+  buildArena();
+  player=makeBey({main:'#16b9ff',dark:'#075185',accent:'#a6f7ff',core:'#ecfbff'},true);
+  enemy=makeBey({main:'#ff477d',dark:'#791c49',accent:'#ffcf73',core:'#fff2d6'},false);
+  scene.add(player.group,enemy.group);placeReady();
+  clock=new THREE.Clock();animate();window.addEventListener('resize',resize);
+}
+function mat(c,metalness=.6,roughness=.25,emissive=0){return new THREE.MeshStandardMaterial({color:c,metalness,roughness,emissive:emissive?c:0,emissiveIntensity:emissive});}
+function buildArena(){
+  arenaGroup=new THREE.Group();scene.add(arenaGroup);
+  const floor=new THREE.Mesh(new THREE.CylinderGeometry(5.35,5.55,.48,96,1,false),mat('#182b3c',.75,.38));floor.position.y=-.43;floor.receiveShadow=true;arenaGroup.add(floor);
+  const bowl=new THREE.Mesh(new THREE.CylinderGeometry(5.18,4.42,.95,96,1,true),new THREE.MeshStandardMaterial({color:'#162b3b',metalness:.55,roughness:.3,side:THREE.DoubleSide}));bowl.position.y=-.02;bowl.receiveShadow=true;arenaGroup.add(bowl);
+  const inner=new THREE.Mesh(new THREE.CylinderGeometry(4.44,4.18,.18,96),mat('#202d3b',.5,.4));inner.position.y=-.21;inner.receiveShadow=true;arenaGroup.add(inner);
+  const disk=new THREE.Mesh(new THREE.CylinderGeometry(4.15,4.1,.12,96),new THREE.MeshStandardMaterial({color:'#101d2a',metalness:.25,roughness:.5}));disk.position.y=-.08;disk.receiveShadow=true;arenaGroup.add(disk);
+  const ring=(r,t,y,c,em=0)=>{let o=new THREE.Mesh(new THREE.TorusGeometry(r,t,8,128),new THREE.MeshStandardMaterial({color:c,metalness:.7,roughness:.25,emissive:c,emissiveIntensity:em}));o.rotation.x=Math.PI/2;o.position.y=y;arenaGroup.add(o);return o};
+  ring(4.93,.085,.38,'#1a8ac0',1.8);ring(4.38,.028,-.005,'#33aaca',.5);ring(3.12,.018,-.003,'#1c6b8c',.32);ring(1.48,.013,-.002,'#1d536d',.22);
+  const outerGlow=new THREE.Mesh(new THREE.TorusGeometry(5.3,.14,8,128),new THREE.MeshBasicMaterial({color:'#2ebfff',transparent:true,opacity:.38}));outerGlow.rotation.x=Math.PI/2;outerGlow.position.y=-.13;arenaGroup.add(outerGlow);
+  const grid=new THREE.GridHelper(40,40,0x244158,0x14293a);grid.position.y=-.72;grid.material.transparent=true;grid.material.opacity=.26;scene.add(grid);
+  const markMat=new THREE.MeshBasicMaterial({color:0x4ab6db,transparent:true,opacity:.22});
+  for(let i=0;i<24;i++){let a=i/24*Math.PI*2;let mark=new THREE.Mesh(new THREE.BoxGeometry(i%3===0?.12:.055,.012,i%3===0?.42:.2),markMat);mark.position.set(Math.sin(a)*4.65,.01,Math.cos(a)*4.65);mark.rotation.y=a;arenaGroup.add(mark)}
+  // Stadium pylons and suspended cyan light rods.
+  for(let i=0;i<12;i++){let a=i/12*Math.PI*2,x=Math.sin(a)*6.05,z=Math.cos(a)*6.05;let p=new THREE.Mesh(new THREE.CylinderGeometry(.075,.11,1.8,8),mat(i%2?'#24465d':'#315a70',.72,.24));p.position.set(x,.04,z);arenaGroup.add(p);let cap=new THREE.Mesh(new THREE.SphereGeometry(.12,12,8),new THREE.MeshBasicMaterial({color:i%2?0x29bfff:0xff4a91}));cap.position.set(x,.98,z);arenaGroup.add(cap)}
+}
+function makeBey(palette,isPlayer){
+  const group=new THREE.Group();const blade=new THREE.Group();group.add(blade);
+  const steel=mat(palette.dark,.83,.2),mainMat=mat(palette.main,.72,.2,.1),accentMat=mat(palette.accent,.66,.2,.22),coreMat=mat(palette.core,.55,.16,.18);
+  const base=new THREE.Mesh(new THREE.CylinderGeometry(.68,.76,.22,12),steel);base.castShadow=true;base.position.y=.12;blade.add(base);
+  const ring=new THREE.Mesh(new THREE.TorusGeometry(.61,.12,8,12),mainMat);ring.rotation.x=Math.PI/2;ring.position.y=.23;ring.castShadow=true;blade.add(ring);
+  // Sculpted radial attack wings: broad metallic fins alternating with accent tips.
+  for(let i=0;i<6;i++){
+    const wing=new THREE.Group();const angle=i*Math.PI/3;wing.rotation.y=angle;wing.position.y=.24;
+    const fin=new THREE.Mesh(new THREE.ConeGeometry(.31,.82,4,1),i%2?mainMat:accentMat);fin.rotation.x=Math.PI/2;fin.rotation.z=Math.PI/2;fin.position.set(.56,0,0);fin.scale.set(1,.54,1.08);fin.castShadow=true;wing.add(fin);
+    const bladeTip=new THREE.Mesh(new THREE.BoxGeometry(.4,.1,.18),i%2?accentMat:mainMat);bladeTip.position.set(.78,.055,0);bladeTip.rotation.y=-.22;bladeTip.castShadow=true;wing.add(bladeTip);
+    blade.add(wing);
+  }
+  const hub=new THREE.Mesh(new THREE.CylinderGeometry(.34,.4,.18,12),steel);hub.position.y=.34;hub.castShadow=true;blade.add(hub);
+  const medallion=new THREE.Mesh(new THREE.CylinderGeometry(.24,.25,.12,12),coreMat);medallion.position.y=.46;medallion.castShadow=true;blade.add(medallion);
+  const jewel=new THREE.Mesh(new THREE.OctahedronGeometry(.15,0),accentMat);jewel.position.y=.55;jewel.rotation.y=Math.PI/4;jewel.castShadow=true;blade.add(jewel);
+  const tip=new THREE.Mesh(new THREE.ConeGeometry(.18,.48,8),mat(palette.dark,.8,.2));tip.position.y=-.2;tip.rotation.x=Math.PI;tip.castShadow=true;group.add(tip);
+  const glow=new THREE.PointLight(isPlayer?0x29caff:0xff4076,0,3.3);glow.position.y=.1;group.add(glow);
+  const shadow=new THREE.Mesh(new THREE.CircleGeometry(.88,32),new THREE.MeshBasicMaterial({color:0x000000,transparent:true,opacity:.5,depthWrite:false}));shadow.rotation.x=-Math.PI/2;shadow.position.y=-.09;group.add(shadow);
+  group.scale.setScalar(.9);
+  return {group,blade,glow,shadow,isPlayer,x:0,z:0,vx:0,vz:0,spin:0,stamina:100,alive:true,wobble:0,hitFlash:0};
+}
+function placeReady(){player.x=-2.2;player.z=.9;enemy.x=2.2;enemy.z=-.9;[player,enemy].forEach(b=>{b.vx=b.vz=0;b.spin=0;b.stamina=100;b.alive=true;b.group.visible=true;b.group.rotation.set(0,0,0);b.blade.rotation.set(0,0,0);b.wobble=0});syncBey(player);syncBey(enemy);updateHud();}
+function syncBey(b){b.group.position.set(b.x,0,b.z)}
+function resize(){camera.aspect=innerWidth/innerHeight;camera.position.y=innerWidth<700?14.1:10.8;camera.position.z=innerWidth<700?17.8:14.6;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)}
+function launch(power){if(state!=='ready')return;state='countdown';$('battleStatus').textContent='BATTLE IN PROGRESS';$('launchBtn').disabled=true;$('launchLabel').textContent='BATTLE IN PROGRESS';$('launchSub').textContent='STEER · BOOST · SURVIVE';let ang=(Math.random()-.5)*.8;const speed=1.4+power*3.1;player.vx=Math.sin(ang)*speed;player.vz=-Math.cos(ang)*speed;player.spin=1650+power*1450;player.glow.intensity=2.3;
+  setToast('3... 2... 1...','GET READY TO RIP!','neutral',1200);playTone(360,.12);setTimeout(()=>{if(state!=='countdown')return;state='battle';const a=Math.atan2(player.x-enemy.x,player.z-enemy.z);enemy.vx=Math.sin(a)*2.1+(Math.random()-.5)*1.5;enemy.vz=Math.cos(a)*2.1+(Math.random()-.5)*1.5;enemy.spin=2450;enemy.glow.intensity=2.2;setToast('LET IT RIP!','', 'neutral',850);playTone(680,.22)},1200)}
+function attackBoost(){if(state!=='battle'||boost<12)return;boost=Math.max(0,boost-12);const toward=Math.atan2(enemy.x-player.x,enemy.z-player.z);player.vx+=Math.sin(toward)*2.35;player.vz+=Math.cos(toward)*2.35;player.spin=Math.max(player.spin-45,500);player.glow.intensity=4;player.hitFlash=.25;spawnBurst(player.x,player.z,0x61eaff,12);playTone(180,.1);updateHud()}
+function setToast(title,sub,type='neutral',duration=0){$('toastTitle').textContent=title;$('toastSub').textContent=sub;$('toast').className=`toast show ${type}`;clearTimeout(toastTimer);if(duration)toastTimer=setTimeout(()=>$('toast').classList.remove('show'),duration)}
+function spawnBurst(x,z,c,count=10){for(let i=0;i<count;i++){const m=new THREE.Mesh(new THREE.SphereGeometry(.035+Math.random()*.045,6,6),new THREE.MeshBasicMaterial({color:c,transparent:true}));m.position.set(x,.12+Math.random()*.35,z);scene.add(m);particles.push({mesh:m,vx:(Math.random()-.5)*4,vy:1+Math.random()*3,vz:(Math.random()-.5)*4,life:.45+Math.random()*.5})}}
+function playTone(freq,duration){if(!soundOn)return;try{audioCtx??=new AudioContext();const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type='sawtooth';o.frequency.value=freq;g.gain.setValueAtTime(.035,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+duration);o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+duration)}catch{}}
+function updatePhysics(dt){if(state!=='battle'&&state!=='countdown')return;
+  if(state==='battle'){
+    const steer=(keys.ArrowLeft||keys.a?-1:0)+(keys.ArrowRight||keys.d?1:0);
+    if(steer){let target=Math.atan2(enemy.x-player.x,enemy.z-player.z)+steer*.72;player.vx+=Math.sin(target)*dt*2.15;player.vz+=Math.cos(target)*dt*2.15}
+    if(boostHeld&&boost>0){boost=Math.max(0,boost-dt*17);player.vx*=1+dt*.44;player.vz*=1+dt*.44}
+    boost=Math.min(100,boost+dt*5.2);
+    let dx=player.x-enemy.x,dz=player.z-enemy.z,dist=Math.hypot(dx,dz)||.01;
+    // CPU alternates between aggressive pursuit and wide circling.
+    const orbit=Math.sin(clock.elapsedTime*1.1)>.55?1:0;let aim=Math.atan2(-dx,-dz)+(orbit?Math.PI/2:0);
+    enemy.vx+=Math.sin(aim)*dt*(orbit?1.7:2.6);enemy.vz+=Math.cos(aim)*dt*(orbit?1.7:2.6);
+    for(const b of [player,enemy]){
+      b.x+=b.vx*dt;b.z+=b.vz*dt;const damp=Math.pow(.987,dt*60);b.vx*=damp;b.vz*=damp;
+      b.spin=Math.max(0,b.spin-dt*(b===player?83:96));b.stamina=Math.max(0,b.stamina-dt*(b===player?1.28:1.45));
+      const r=Math.hypot(b.x,b.z),limit=4.23;
+      if(r>limit){const nx=b.x/r,nz=b.z/r;b.x=nx*limit;b.z=nz*limit;const dot=b.vx*nx+b.vz*nz;b.vx-=2.0*dot*nx;b.vz-=2.0*dot*nz;b.stamina=Math.max(0,b.stamina-3.5);b.wobble=Math.min(1,b.wobble+.18);spawnBurst(b.x,b.z,b===player?0x52dfff:0xff638a,3)}
+      b.wobble=Math.max(0,b.wobble-dt*.42);syncBey(b);
+    }
+    dx=player.x-enemy.x;dz=player.z-enemy.z;dist=Math.hypot(dx,dz)||.01;
+    if(dist<1.27){let nx=dx/dist,nz=dz/dist,closing=(player.vx-enemy.vx)*nx+(player.vz-enemy.vz)*nz;
+      if(closing<0){let impulse=Math.min(4.5,-closing*.9+.85);player.vx+=nx*impulse*.7;player.vz+=nz*impulse*.7;enemy.vx-=nx*impulse*.66;enemy.vz-=nz*impulse*.66;
+        let damage=Math.min(8,1.4+impulse*1.15);enemy.stamina=Math.max(0,enemy.stamina-damage*(player.spin>enemy.spin?.75:1));player.stamina=Math.max(0,player.stamina-damage*.45);player.spin=Math.max(0,player.spin-14);enemy.spin=Math.max(0,enemy.spin-22);player.wobble=Math.min(1,player.wobble+.2);enemy.wobble=Math.min(1,enemy.wobble+.27);player.hitFlash=enemy.hitFlash=.28;spawnBurst((player.x+enemy.x)/2,(player.z+enemy.z)/2,Math.random()>.5?0x68eaff:0xff749c,12);playTone(110+Math.random()*90,.14)
+      }
+      let overlap=1.27-dist;player.x+=nx*overlap*.5;player.z+=nz*overlap*.5;enemy.x-=nx*overlap*.5;enemy.z-=nz*overlap*.5;
+    }
+    if(player.stamina<=0||enemy.stamina<=0){finish(player.stamina>enemy.stamina)}
+  }
+}
+function finish(won){if(state==='over')return;state='over';$('battleStatus').textContent=won?'YOU WIN':'DEFEATED';$('launchBtn').disabled=false;$('launchLabel').textContent=won?'NEXT ROUND':'TRY AGAIN';$('launchSub').textContent=won?'HOLD TO CHARGE':'RE-LAUNCH';$('toast').className=`toast show ${won?'win':'loss'}`;$('toastTitle').textContent=won?'BLADE VICTORY!':'SPIN OUT!';$('toastSub').textContent=won?'THE ARENA IS YOURS':'RYUGA TAKES THIS ROUND';if(won)round++;playTone(won?760:95,.6);setTimeout(()=>{if(state==='over'){$('launchBtn').disabled=false}},500)}
+function updateHud(){const ps=clamp(player.stamina,0,100),es=clamp(enemy.stamina,0,100);$('playerStaminaBar').style.width=ps+'%';$('enemyStaminaBar').style.width=es+'%';$('playerStaminaText').textContent=Math.ceil(ps)+'%';$('enemyStaminaText').textContent=Math.ceil(es)+'%';$('playerSpin').textContent=Math.round(player.spin);$('enemySpin').textContent=Math.round(enemy.spin);$('boostBar').style.width=boost+'%';$('boostText').textContent=Math.floor(boost)+'%';$('roundNumber').textContent=String(round).padStart(2,'0')}
+function animate(){requestAnimationFrame(animate);const dt=Math.min(clock.getDelta(),.035);updatePhysics(dt);
+  for(const b of [player,enemy]){
+    b.blade.rotation.y-=dt*(b.spin/60)*.095;
+    const wobble=b.wobble*(.13+Math.sin(clock.elapsedTime*24)*.045);b.blade.rotation.x=Math.sin(clock.elapsedTime*18+(b.isPlayer?0:1))*wobble;b.blade.rotation.z=Math.cos(clock.elapsedTime*17+(b.isPlayer?1:0))*wobble;
+    b.group.position.y=Math.abs(Math.sin(clock.elapsedTime*9+(b.isPlayer?0:1)))*.035;
+    b.glow.intensity=Math.max(b.hitFlash*12,b.spin/1500);b.hitFlash=Math.max(0,b.hitFlash-dt);
+  }
+  for(let i=particles.length-1;i>=0;i--){const p=particles[i];p.life-=dt;p.mesh.position.x+=p.vx*dt;p.mesh.position.y+=p.vy*dt;p.mesh.position.z+=p.vz*dt;p.vy-=5*dt;p.mesh.material.opacity=clamp(p.life*1.8,0,1);if(p.life<=0){scene.remove(p.mesh);p.mesh.geometry.dispose();p.mesh.material.dispose();particles.splice(i,1)}}
+  if(charging){charge=clamp((performance.now()-chargeStart)/1700,0,1);$('launchBtn').style.setProperty('--charge',(charge*100)+'%');$('chargeValue').textContent=Math.round(charge*100)+'%';$('chargeReadout').classList.add('show')}
+  updateHud();renderer.render(scene,camera);
+}
+function beginCharge(e){if(state==='over')resetRound();if(state!=='ready')return;e.preventDefault();charging=true;chargeStart=performance.now();$('launchBtn').classList.add('charging');try{$('launchBtn').setPointerCapture(e.pointerId)}catch{}}
+function releaseCharge(e){if(!charging)return;e?.preventDefault();charging=false;$('launchBtn').classList.remove('charging');$('chargeReadout').classList.remove('show');$('launchBtn').style.setProperty('--charge','0%');const power=Math.max(.16,charge);charge=0;launch(power)}
+function resetRound(){clearTimeout(toastTimer);$('toast').className='toast';state='ready';charge=0;charging=false;boost=100;boostHeld=false;$('launchBtn').disabled=false;$('launchBtn').classList.remove('charging');$('launchLabel').textContent='HOLD TO CHARGE';$('launchSub').textContent='RELEASE TO LAUNCH';$('battleStatus').textContent='READY TO LAUNCH';player.glow.intensity=enemy.glow.intensity=0;placeReady()}
+$('launchBtn').addEventListener('pointerdown',beginCharge);$('launchBtn').addEventListener('pointerup',releaseCharge);$('launchBtn').addEventListener('pointercancel',releaseCharge);$('launchBtn').addEventListener('contextmenu',e=>e.preventDefault());
+$('resetBtn').addEventListener('click',()=>{if(state==='battle'||state==='countdown')round=Math.max(1,round);resetRound()});
+$('soundBtn').addEventListener('click',()=>{soundOn=!soundOn;$('soundBtn').style.color=soundOn?'var(--cyan)':'#a8bed0';$('soundBtn').textContent=soundOn?'♫':'♪';if(soundOn)playTone(540,.08)});
+window.addEventListener('keydown',e=>{const k=e.key.toLowerCase();keys[k]=true;keys[e.key]=true;if([' ','arrowleft','arrowright','arrowup'].includes(k))e.preventDefault();if(k===' '||k==='w'){if(!boostHeld){boostHeld=true;attackBoost()}}});
+window.addEventListener('keyup',e=>{const k=e.key.toLowerCase();keys[k]=false;keys[e.key]=false;if(k===' '||k==='w')boostHeld=false});
+// Simple touch steering on the arena: left/right halves steer, double-tap boosts.
+let lastTouch=0;stage.addEventListener('touchstart',e=>{if(e.target.closest('button'))return;const now=performance.now();if(now-lastTouch<320)attackBoost();lastTouch=now;keys[e.touches[0].clientX<innerWidth/2?'a':'d']=true},{passive:true});stage.addEventListener('touchend',()=>{keys.a=keys.d=false},{passive:true});
+init();
+</script>
+</body>
+</html>
